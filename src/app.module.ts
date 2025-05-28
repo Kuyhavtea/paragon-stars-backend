@@ -5,7 +5,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
-
+import { User } from './users/entities/user.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -17,7 +17,7 @@ import { ConfigModule } from '@nestjs/config';
       port: 5432,
       password: 'simform',
       username: 'postgres',
-      entities: [],
+      entities: [User],
       database: 'piu_stars',
       synchronize: true,
       logging: true,
