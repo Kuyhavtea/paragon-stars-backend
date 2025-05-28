@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, Res, UseGuards, Post, Body } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
@@ -28,5 +28,18 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   getProfile(@Req() req) {
     return req.user;
+  }
+
+  @Post('test-login')
+  async testLogin(@Body() body: { email: string; firstName?: string; lastName?: string }) {
+    const mockUser = {
+      email: body.email,
+      firstName: body.firstName || 'Test',
+      lastName: body.lastName || 'User',
+      id: 1,
+    };
+    
+    const token = this.authService.generateJwt(mockUser);
+    return token;
   }
 }
