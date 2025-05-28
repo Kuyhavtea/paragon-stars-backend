@@ -10,23 +10,31 @@ export class AuthService {
   ) {}
 
   async validateGoogleUser(details: any) {
-    const user = await this.usersService.findByEmail(details.email);
+    let user = await this.usersService.findByGoogleId(details.id);
     
-    if (user) {
-      return this.updateUserDetails(user, details);
+    if (!user) {
+      user = await this.usersService.findByEmail(details.email);
+      
+      if (user) {
+        user = await this.usersService.update(user.id, {
+          googleId: details.id,
+          isGoogleAccount: true,
+          firstName: details.firstName || user.firstName,
+          lastName: details.lastName || user.lastName,
+          picture: details.picture || user.picture,
+        });
+      } else {
+        user = await this.usersService.create({
+          email: details.email,
+          firstName: details.firstName,
+          lastName: details.lastName,
+          picture: details.picture,
+          googleId: details.id,
+          isGoogleAccount: true,
+        });
+      }
     }
     
-    return this.usersService.create({
-      email: details.email,
-      firstName: details.firstName,
-      lastName: details.lastName,
-      picture: details.picture,
-      isGoogleAccount: true,
-    });
-  }
-
-  private async updateUserDetails(user: any, details: any) {
-    // Update user details if needed
     return user;
   }
 
