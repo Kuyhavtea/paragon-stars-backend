@@ -12,10 +12,10 @@ import { User } from './users/entities/user.entity';
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({
-      type: 'postgres',
+      type: 'postgres', 
       host: 'localhost',
       port: 5432,
-      password: 'simform',
+      password: '',
       username: 'postgres',
       entities: [User],
       database: 'piu_stars',
