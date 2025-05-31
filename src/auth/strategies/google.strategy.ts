@@ -23,9 +23,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     const { id, name, emails, photos } = profile;
     const email = emails[0].value;
 
-    const allowedDomain = '@paragoniu.edu.kh'
+    const allowedDomain = this.configService.get('ALLOWED_EMAIL_DOMAIN')!;
     if (!email.endsWith(allowedDomain)) {
-      return done(new Error(`Please use your paragon email`), false);
+      return done(new Error(`Please use your email from the allowed domain: ${allowedDomain}`), false);
     }
 
     try {
