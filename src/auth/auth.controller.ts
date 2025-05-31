@@ -16,12 +16,19 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   googleAuthCallback(@Req() req, @Res() res: Response) {
-    const token = this.authService.generateJwt(req.user);
-    
-    //  can customize this to redirect to your frontend with the token
-    return res.status(200).json(token);
-    
-    // Alternative: Redirect to frontend with token
+    try {
+      const token = this.authService.generateJwt(req.user);
+      
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      const redirectUrl = `${frontendUrl}/auth/callback?token=${token.access_token}&user=${encodeURIComponent(JSON.stringify(token.user))}`;
+      
+      return res.redirect(redirectUrl);
+    } catch (error) {
+      // Redirect to frontend with error
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      const errorUrl = `${frontendUrl}/auth?error=${encodeURIComponent(error.message)}`;
+      return res.redirect(errorUrl);
+    }
   }
 
   @Get('profile')
